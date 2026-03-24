@@ -31,8 +31,9 @@ def create_app():
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     # Extensions
-    CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
-    JWTManager(app)
+    
+
+    CORS(app, resources={r"/*": {"origins": "*"}})
     db.init_app(app)
 
     # Register blueprints
