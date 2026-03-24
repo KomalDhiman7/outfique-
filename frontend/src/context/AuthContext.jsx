@@ -23,11 +23,29 @@ export function AuthProvider({ children }) {
   useEffect(() => { fetchMe(); }, [fetchMe]);
 
   const login = async (email, password) => {
-    const { data } = await authAPI.login({ email, password });
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
-    return data.user;
-  };
+  // 🔥 DEMO MODE (bypass backend)
+  if (email === 'aurora@demo.com' && password === 'demo123') {
+    const demoUser = {
+      id: 1,
+      username: 'aurora_styles',
+      email: 'aurora@demo.com',
+      bio: 'Minimalist fashion lover ✨',
+      is_premium: true,
+      profile_picture: null,
+    };
+
+    localStorage.setItem('token', 'demo-token');
+    setUser(demoUser);
+
+    return demoUser;
+  }
+
+  // ❌ real backend (still broken)
+  const { data } = await authAPI.login({ email, password });
+  localStorage.setItem('token', data.token);
+  setUser(data.user);
+  return data.user;
+};
 
   const signup = async (username, email, password) => {
     const { data } = await authAPI.signup({ username, email, password });
