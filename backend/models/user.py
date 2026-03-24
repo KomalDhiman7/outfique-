@@ -16,7 +16,7 @@ class User(db.Model):
     # Relationships
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
     wardrobe_items = db.relationship('WardrobeItem', backref='owner', lazy='dynamic', cascade='all, delete-orphan')
-    notifications = db.relationship('Notification', backref='recipient', lazy='dynamic', cascade='all, delete-orphan')
+    # notifications = db.relationship('Notification', backref='recipient', lazy='dynamic', cascade='all, delete-orphan')
 
     def to_dict(self, include_private=False):
         data = {

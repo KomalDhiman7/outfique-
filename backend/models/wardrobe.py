@@ -32,13 +32,26 @@ class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     actor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    notif_type = db.Column(db.String(50), nullable=False)  # 'like', 'comment', 'follow'
+    notif_type = db.Column(db.String(50), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=True)
     message = db.Column(db.String(300), nullable=False)
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    actor = db.relationship('User', foreign_keys=[actor_id], backref='sent_notifications')
+    # receiver
+    user = db.relationship(
+        'User',
+        foreign_keys=[user_id],
+        backref='received_notifications'
+    )
+
+    #  sender
+    actor = db.relationship(
+        'User',
+        foreign_keys=[actor_id],
+        backref='sent_notifications'
+    )
+
     post = db.relationship('Post', backref='notifications')
 
     def to_dict(self):

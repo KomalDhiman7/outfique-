@@ -3,7 +3,7 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
-from config.database import db
+from models.database import db
 from routes.auth import auth_bp
 from routes.posts import posts_bp
 from routes.wardrobe import wardrobe_bp
@@ -13,6 +13,8 @@ from routes.notifications import notifications_bp
 from routes.search import search_bp
 
 load_dotenv()
+
+
 
 def create_app():
     app = Flask(__name__, static_folder='static')
@@ -42,6 +44,9 @@ def create_app():
     app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
     app.register_blueprint(search_bp, url_prefix='/api/search')
 
+    @app.route('/')
+    def home():
+        return {"message": "Outfique backend running 🚀"}
     # Serve uploaded files
     @app.route('/uploads/<path:filename>')
     def serve_upload(filename):
