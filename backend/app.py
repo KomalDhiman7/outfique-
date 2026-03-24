@@ -33,7 +33,14 @@ def create_app():
     # Extensions
     
 
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    CORS(app, supports_credentials=True)
+    app.config['CORS_HEADERS'] = 'Content-Type'
+    @app.after_request
+    def apply_cors(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
+        return response
     db.init_app(app)
 
     # Register blueprints
