@@ -1,6 +1,5 @@
 import os
 from flask import Flask, send_from_directory
-from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from models.database import db
@@ -22,6 +21,9 @@ def create_app():
     # Config
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret')
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-dev-secret')
+    app.config['JWT_TOKEN_LOCATION'] = ['headers']
+    app.config['JWT_HEADER_NAME'] = 'Authorization'
+    app.config['JWT_HEADER_TYPE'] = 'Bearer'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///outfique.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
@@ -32,16 +34,8 @@ def create_app():
 
     # Extensions
     
-
-    CORS(app, supports_credentials=True)
-    app.config['CORS_HEADERS'] = 'Content-Type'
-    @app.after_request
-    def apply_cors(response):
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
-        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
-        return response
     db.init_app(app)
+    JWTManager(app)
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
